@@ -17,26 +17,26 @@
             "group": "Getting Started",
             "pages": [
               "index",
-              "sui-workshop/01-introduction"
+              "frontend/01-introduction"
             ]
           },
           {
             "group": "Workshop Modules",
             "pages": [
-              "sui-workshop/02-installation",
-              "sui-workshop/03-setup-providers",
-              "sui-workshop/04-connect-wallet",
-              "sui-workshop/05-read-data",
-              "sui-workshop/06-sign-transactions"
+              "frontend/02-installation",
+              "frontend/03-setup-providers",
+              "frontend/04-connect-wallet",
+              "frontend/05-read-data",
+              "frontend/06-sign-transactions"
             ]
           }
         ]
       },
       {
-        "tab": "Contracts",
+        "tab": "Smart Contracts",
         "groups": [
           {
-            "group": "Smart Contracts",
+            "group": "Move Development",
             "pages": []
           }
         ]
