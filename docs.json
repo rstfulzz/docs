@@ -11,15 +11,25 @@
   "navigation": {
     "tabs": [
       {
-        "tab": "Frontend",
+        "tab": "Introduction",
         "groups": [
           {
             "group": "Getting Started",
             "pages": [
-              "index",
-              "frontend/01-introduction"
+              "index"
             ]
           },
+          {
+            "group": "About Sui",
+            "pages": [
+              "introduction/01-introduction"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Frontend",
+        "groups": [
           {
             "group": "Workshop Modules",
             "pages": [
