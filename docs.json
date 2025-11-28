@@ -46,8 +46,17 @@
         "tab": "Smart Contracts",
         "groups": [
           {
-            "group": "Move Development",
-            "pages": []
+            "group": "Getting Started",
+            "pages": [
+              "smart-contract/01-getting-started",
+              "smart-contract/02-environment-setup"
+            ]
+          },
+          {
+            "group": "Move Programming",
+            "pages": [
+              "smart-contract/03-move-basics"
+            ]
           }
         ]
       }

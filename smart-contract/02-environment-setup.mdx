@@ -1,0 +1,191 @@
+---
+title: "Environment Setup"
+description: "Install Sui CLI and set up your Move development environment"
+---
+
+# Environment Setup
+
+Set up your development environment for writing Move smart contracts on Sui.
+
+## Install Sui CLI
+
+The Sui CLI is the primary tool for developing Move contracts.
+
+### Using Install Script (Recommended)
+
+<Tabs>
+  <Tab title="macOS/Linux">
+    ```bash curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh cargo
+    install --locked --git https://github.com/MystenLabs/sui.git --branch
+    mainnet sui ```
+  </Tab>
+
+  <Tab title="Windows">
+    ```powershell # Install Rust first from https://rustup.rs cargo install
+    --locked --git https://github.com/MystenLabs/sui.git --branch mainnet sui
+    ```
+  </Tab>
+</Tabs>
+
+### Verify Installation
+
+```bash
+sui --version
+```
+
+You should see output like: `sui 1.x.x`
+
+## Project Structure
+
+Create your first Move project:
+
+```bash
+sui move new my_first_package
+cd my_first_package
+```
+
+This creates the following structure:
+
+```
+my_first_package/
+├── Move.toml           # Package manifest
+├── sources/            # Move source files
+│   └── my_module.move
+└── tests/             # Test files
+```
+
+## Move.toml Configuration
+
+The `Move.toml` file defines your package configuration:
+
+```toml
+[package]
+name = "my_first_package"
+version = "0.0.1"
+
+[dependencies]
+Sui = { git = "https://github.com/MystenLabs/sui.git", subdir = "crates/sui-framework/packages/sui-framework", rev = "mainnet" }
+
+[addresses]
+my_first_package = "0x0"
+```
+
+## Build Your Project
+
+Test that everything is set up correctly:
+
+```bash
+sui move build
+```
+
+You should see: `✓ Build Successful`
+
+## Editor Setup
+
+### VS Code (Recommended)
+
+Install the Move language extension:
+
+1. Open VS Code
+2. Go to Extensions (Cmd/Ctrl + Shift + X)
+3. Search for "Move" by "Mysten Labs"
+4. Click Install
+
+### Other Editors
+
+- **Vim/Neovim**: [move.vim](https://github.com/rvmelkonian/move.vim)
+- **Emacs**: [move-mode](https://github.com/amnn/move-mode)
+
+## Configure Sui Client
+
+Set up your Sui client to interact with networks:
+
+```bash
+# Initialize client
+sui client
+
+# Check active address
+sui client active-address
+
+# List available addresses
+sui client addresses
+
+# Get test tokens (testnet only)
+sui client faucet
+```
+
+## Available Networks
+
+<AccordionGroup>
+<Accordion title="Mainnet">
+Production network for deployed applications
+
+```bash
+sui client new-env --alias mainnet --rpc https://fullnode.mainnet.sui.io:443
+sui client switch --env mainnet
+```
+
+</Accordion>
+
+<Accordion title="Testnet">
+Stable test network for development
+
+```bash
+sui client new-env --alias testnet --rpc https://fullnode.testnet.sui.io:443
+sui client switch --env testnet
+```
+
+</Accordion>
+
+<Accordion title="Devnet">
+Latest features (resets frequently)
+
+```bash
+sui client new-env --alias devnet --rpc https://fullnode.devnet.sui.io:443
+sui client switch --env devnet
+```
+
+</Accordion>
+
+<Accordion title="Localnet">
+Local node for development
+
+```bash
+# Start local node
+sui start
+
+# Connect to local node
+sui client new-env --alias local --rpc http://127.0.0.1:9000
+sui client switch --env local
+```
+
+</Accordion>
+</AccordionGroup>
+
+## Get Test Tokens
+
+Request SUI tokens for testing (testnet/devnet only):
+
+```bash
+# Switch to testnet
+sui client switch --env testnet
+
+# Request tokens from faucet
+sui client faucet
+
+# Check your balance
+sui client gas
+```
+
+## Next Steps
+
+Your environment is ready! Learn Move basics:
+
+<Card
+  title="Move Basics"
+  icon="arrow-right"
+  href="/smart-contract/03-move-basics"
+  horizontal
+>
+  Learn Move syntax, types, and fundamental concepts
+</Card>

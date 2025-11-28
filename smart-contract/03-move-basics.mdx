@@ -1,0 +1,272 @@
+---
+title: "Move Basics"
+description: "Learn Move syntax, types, and fundamental programming concepts"
+---
+
+# Move Basics
+
+Master the fundamentals of the Move programming language.
+
+## Module Structure
+
+Every Move file defines a module:
+
+```rust
+module my_package::my_module {
+    // Module contents
+}
+```
+
+- `my_package` - Package name (from Move.toml)
+- `my_module` - Module name (matches filename)
+
+## Basic Types
+
+### Primitive Types
+
+```rust
+module my_package::types_example {
+    fun example() {
+        // Integers
+        let x: u8 = 255;
+        let y: u64 = 1000000;
+        let z: u128 = 340282366920938463463374607431768211455;
+
+        // Boolean
+        let is_valid: bool = true;
+
+        // Address
+        let addr: address = @0x1;
+    }
+}
+```
+
+### Vectors
+
+```rust
+use std::vector;
+
+fun vector_example() {
+    let mut v = vector::empty<u64>();
+    vector::push_back(&mut v, 10);
+    vector::push_back(&mut v, 20);
+
+    let first = vector::borrow(&v, 0); // &10
+}
+```
+
+## Functions
+
+### Basic Function
+
+```rust
+fun add(a: u64, b: u64): u64 {
+    a + b
+}
+```
+
+### Public Functions
+
+```rust
+public fun greet(): vector<u8> {
+    b"Hello, Sui!"
+}
+```
+
+### Entry Functions
+
+Entry functions can be called directly from transactions:
+
+```rust
+entry fun transfer_coin(amount: u64, recipient: address) {
+    // Transfer logic
+}
+```
+
+## Structs
+
+Define custom types with structs:
+
+```rust
+struct User {
+    name: vector<u8>,
+    age: u8,
+    is_active: bool
+}
+```
+
+### Creating Structs
+
+```rust
+fun create_user(): User {
+    User {
+        name: b"Alice",
+        age: 25,
+        is_active: true
+    }
+}
+```
+
+## Abilities
+
+Structs can have special abilities:
+
+```rust
+// Copy: can be copied
+struct Point has copy {
+    x: u64,
+    y: u64
+}
+
+// Drop: can be discarded
+struct Data has drop {
+    value: u64
+}
+
+// Store: can be stored in global storage
+struct Item has store {
+    id: u64
+}
+
+// Key: can be used as a key in global storage
+struct Resource has key {
+    id: UID
+}
+```
+
+## References
+
+### Immutable References
+
+```rust
+fun read_value(x: &u64): u64 {
+    *x
+}
+```
+
+### Mutable References
+
+```rust
+fun increment(x: &mut u64) {
+    *x = *x + 1;
+}
+```
+
+## Control Flow
+
+### If Expressions
+
+```rust
+fun max(a: u64, b: u64): u64 {
+    if (a > b) {
+        a
+    } else {
+        b
+    }
+}
+```
+
+### While Loops
+
+```rust
+fun sum_to_n(n: u64): u64 {
+    let mut sum = 0;
+    let mut i = 1;
+
+    while (i <= n) {
+        sum = sum + i;
+        i = i + 1;
+    };
+
+    sum
+}
+```
+
+## Error Handling
+
+Use `assert!` for validation:
+
+```rust
+const EInvalidAmount: u64 = 0;
+
+fun transfer(amount: u64) {
+    assert!(amount > 0, EInvalidAmount);
+    // Transfer logic
+}
+```
+
+## Common Patterns
+
+### Option Type
+
+```rust
+use std::option::{Option, some, none};
+
+fun find_user(id: u64): Option<User> {
+    if (id == 1) {
+        some(create_user())
+    } else {
+        none()
+    }
+}
+```
+
+### Generics
+
+```rust
+struct Box<T> {
+    value: T
+}
+
+fun create_box<T>(value: T): Box<T> {
+    Box { value }
+}
+```
+
+## Complete Example
+
+Here's a complete module showcasing basic concepts:
+
+```rust
+module my_package::counter {
+    use sui::object::{Self, UID};
+    use sui::tx_context::TxContext;
+
+    /// Counter object
+    struct Counter has key {
+        id: UID,
+        value: u64
+    }
+
+    /// Create a new counter
+    public fun create(ctx: &mut TxContext): Counter {
+        Counter {
+            id: object::new(ctx),
+            value: 0
+        }
+    }
+
+    /// Increment counter
+    public fun increment(counter: &mut Counter) {
+        counter.value = counter.value + 1;
+    }
+
+    /// Get current value
+    public fun value(counter: &Counter): u64 {
+        counter.value
+    }
+}
+```
+
+## Next Steps
+
+Now that you know Move basics, let's write your first contract:
+
+<Card
+  title="First Contract"
+  icon="arrow-right"
+  href="/smart-contract/04-first-contract"
+  horizontal
+>
+  Create and deploy your first Move smart contract
+</Card>

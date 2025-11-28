@@ -1,0 +1,153 @@
+---
+title: "Getting Started with Move"
+description: "Introduction to Move programming language for Sui smart contracts"
+---
+
+# Getting Started with Move
+
+Learn to write smart contracts on Sui using the Move programming language.
+
+## What is Move?
+
+Move is a safe and flexible programming language designed for blockchain smart contracts. Originally developed for the Diem blockchain, Move has been adapted for Sui with unique features that leverage Sui's object-centric architecture.
+
+### Key Features
+
+<CardGroup cols={2}>
+  <Card title="Resource Safety" icon="shield-check">
+    Assets are represented as resources that cannot be copied or implicitly
+    discarded
+  </Card>
+
+  <Card title="Type Safety" icon="code">
+    Strong static typing prevents common programming errors at compile time
+  </Card>
+
+  <Card title="Flexibility" icon="wand-magic-sparkles">
+    Generics and modular design enable code reuse and composability
+  </Card>
+
+  <Card title="Gas Efficiency" icon="bolt">
+    Optimized execution model keeps transaction costs low
+  </Card>
+</CardGroup>
+
+## Why Move for Sui?
+
+Move is perfectly suited for Sui's object-centric model:
+
+- **Objects as First-Class Citizens** - Everything in Sui is an object with ownership
+- **Parallel Execution** - Move's ownership model enables safe parallel transaction processing
+- **Rich Type System** - Define complex on-chain data structures with ease
+- **Security by Design** - Prevent common vulnerabilities like reentrancy and integer overflow
+
+## What You'll Learn
+
+In this section, you'll master:
+
+<Steps>
+  <Step title="Environment Setup">
+    Install Sui CLI and set up your development environment
+  </Step>
+
+  <Step title="Move Basics">
+    Learn Move syntax, types, and fundamental concepts
+  </Step>
+
+  <Step title="Write Contracts">
+    Create your first Move module with objects and functions
+  </Step>
+
+  <Step title="Test & Deploy">
+    Test your contracts and deploy to Sui networks
+  </Step>
+</Steps>
+
+## Prerequisites
+
+Before starting, you should have:
+
+- Basic programming experience (any language)
+- Understanding of blockchain concepts
+- Familiarity with command line tools
+
+## Module Structure
+
+<CardGroup cols={3}>
+  <Card
+    title="Environment Setup"
+    icon="download"
+    href="/smart-contract/02-environment-setup"
+  >
+    Install Sui CLI and configure your workspace
+  </Card>
+
+  <Card title="Move Basics" icon="book" href="/smart-contract/03-move-basics">
+    Learn Move syntax and fundamental concepts
+  </Card>
+
+  <Card
+    title="First Contract"
+    icon="code"
+    href="/smart-contract/04-first-contract"
+  >
+    Write and deploy your first Move module
+  </Card>
+
+  <Card
+    title="Objects & Ownership"
+    icon="cube"
+    href="/smart-contract/05-objects-ownership"
+  >
+    Work with Sui objects and ownership patterns
+  </Card>
+
+  <Card title="Testing" icon="flask" href="/smart-contract/06-testing">
+    Write unit tests for your Move code
+  </Card>
+
+  <Card title="Deployment" icon="rocket" href="/smart-contract/07-deployment">
+    Deploy contracts to testnet and mainnet
+  </Card>
+</CardGroup>
+
+## Resources
+
+<CardGroup cols={2}>
+  <Card title="Move Book" icon="book-open" href="https://move-book.com">
+    Comprehensive Move language guide
+  </Card>
+
+  <Card
+    title="Sui Move Docs"
+    icon="book"
+    href="https://docs.sui.io/concepts/sui-move-concepts"
+  >
+    Official Sui Move documentation
+  </Card>
+
+  <Card
+    title="Move Examples"
+    icon="github"
+    href="https://github.com/MystenLabs/sui/tree/main/examples"
+  >
+    Example Move contracts on GitHub
+  </Card>
+
+  <Card title="Move Playground" icon="code" href="https://sui-playground.dev">
+    Write and test Move code online
+  </Card>
+</CardGroup>
+
+## Next Steps
+
+Ready to start writing Move contracts? Begin with the environment setup:
+
+<Card
+  title="Environment Setup"
+  icon="arrow-right"
+  href="/smart-contract/02-environment-setup"
+  horizontal
+>
+  Install Sui CLI and configure your development environment
+</Card>
