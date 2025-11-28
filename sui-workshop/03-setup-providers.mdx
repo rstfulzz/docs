@@ -15,11 +15,13 @@ Your Sui dApp needs three providers wrapped in the correct order:
 2. **SuiClientProvider** - Manages network connections
 3. **WalletProvider** - Manages wallet state (innermost)
 
-## Basic Setup
+## Basic Setup for Next.js
 
-Here's the complete provider setup for your app:
+Since we're using Next.js 15 with the App Router, we need to create a client component for the providers. Create a new file:
 
-```typescript
+```typescript title="src/components/providers.tsx"
+"use client";
+
 import {
   createNetworkConfig,
   SuiClientProvider,
@@ -27,6 +29,10 @@ import {
 } from "@mysten/dapp-kit";
 import { getFullnodeUrl } from "@mysten/sui/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactNode } from "react";
+
+// Import dApp Kit CSS
+import "@mysten/dapp-kit/dist/index.css";
 
 // Configure the networks you want to connect to
 const { networkConfig } = createNetworkConfig({
@@ -39,19 +45,15 @@ const { networkConfig } = createNetworkConfig({
 // Create a QueryClient instance
 const queryClient = new QueryClient();
 
-function App() {
+export function Providers({ children }: { children: ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
       <SuiClientProvider networks={networkConfig} defaultNetwork="testnet">
-        <WalletProvider>
-          <YourApp />
-        </WalletProvider>
+        <WalletProvider>{children}</WalletProvider>
       </SuiClientProvider>
     </QueryClientProvider>
   );
 }
-
-export default App;
 ```
 
 ## Provider Details
@@ -193,6 +195,7 @@ List of wallet names that should appear at the top of the wallet selection list.
 ```typescript
 preferredWallets={['Sui Wallet', 'Suiet Wallet', 'Ethos Wallet']}
 ```
+
 </Accordion>
 
 <Accordion title="walletFilter">
@@ -206,6 +209,7 @@ walletFilter={(wallet) => {
   return wallet.features.includes('sui:signAndExecuteTransaction');
 }}
 ```
+
 </Accordion>
 
 <Accordion title="enableUnsafeBurner">
@@ -216,6 +220,7 @@ Enable a development-only burner wallet that generates a temporary keypair. **Ne
 ```typescript
 enableUnsafeBurner={process.env.NODE_ENV === 'development'}
 ```
+
 </Accordion>
 
 <Accordion title="autoConnect">
@@ -226,6 +231,7 @@ Automatically reconnect to the most recently used wallet when the app loads.
 ```typescript
 autoConnect={true} // Default: false
 ```
+
 </Accordion>
 
 <Accordion title="storage">
@@ -238,6 +244,7 @@ storage={window.localStorage} // Default
 // or
 storage={null} // Disable persistence
 ```
+
 </Accordion>
 
 <Accordion title="storageKey">
@@ -246,59 +253,48 @@ storage={null} // Disable persistence
 The key used to store wallet connection data.
 
 ```typescript
-storageKey="my-dapp-wallet" // Default: "sui-dapp-kit:wallet-connection-info"
+storageKey = "my-dapp-wallet"; // Default: "sui-dapp-kit:wallet-connection-info"
 ```
+
 </Accordion>
 </AccordionGroup>
 
 ## Complete Example
 
-Here's a production-ready setup with all providers configured:
+Now integrate the Providers component into your Next.js layout:
 
-```typescript title="src/main.tsx"
-import React from "react";
-import ReactDOM from "react-dom/client";
-import {
-  createNetworkConfig,
-  SuiClientProvider,
-  WalletProvider,
-} from "@mysten/dapp-kit";
-import { getFullnodeUrl } from "@mysten/sui/client";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import App from "./App";
+```typescript title="src/app/layout.tsx"
+import type { Metadata } from "next";
+import { Providers } from "@/components/providers";
+import "./globals.css";
 
-// Import dApp Kit CSS
-import "@mysten/dapp-kit/dist/index.css";
+export const metadata: Metadata = {
+  title: "Sui Workshop dApp",
+  description: "Learn to build on Sui blockchain",
+};
 
-// Configure supported networks
-const { networkConfig } = createNetworkConfig({
-  mainnet: { url: getFullnodeUrl("mainnet") },
-  testnet: { url: getFullnodeUrl("testnet") },
-  devnet: { url: getFullnodeUrl("devnet") },
-});
-
-// Configure React Query
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 60 * 1000, // 1 minute
-      gcTime: 5 * 60 * 1000, // 5 minutes
-    },
-  },
-});
-
-ReactDOM.createRoot(document.getElementById("root")!).render(
-  <React.StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <SuiClientProvider networks={networkConfig} defaultNetwork="testnet">
-        <WalletProvider autoConnect={true} preferredWallets={["Sui Wallet"]}>
-          <App />
-        </WalletProvider>
-      </SuiClientProvider>
-    </QueryClientProvider>
-  </React.StrictMode>
-);
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html lang="en" suppressHydrationWarning>
+      <body className="bg-background text-foreground bg-grid min-h-screen">
+        <Providers>
+          <main className="mx-2 sm:mx-8 md:mx-16 lg:mx-28 xl:mx-28 my-32">
+            {children}
+          </main>
+        </Providers>
+      </body>
+    </html>
+  );
+}
 ```
+
+That's it! Your Next.js app now has all the Sui providers configured and ready to use.
+
+````
 
 ## Switching Networks
 
@@ -321,7 +317,7 @@ function NetworkSwitcher() {
     </select>
   );
 }
-```
+````
 
 ## Next Steps
 

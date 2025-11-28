@@ -5,31 +5,46 @@ description: "Install the Sui TypeScript SDK and dApp Kit packages"
 
 # Installing Sui SDK and dApp Kit
 
-This guide will walk you through installing all the necessary packages to build a Sui dApp with React.
+This guide will walk you through setting up the workshop project and installing all the necessary Sui packages.
 
-## Required Packages
+## Clone the Workshop Repository
 
-To use the Sui dApp Kit in your React project, you need to install three core packages:
+First, clone the workshop starter repository:
+
+```bash
+git clone https://github.com/rstfulzz/workshop-sui-fe.git
+cd workshop-sui-fe
+```
+
+## Install Dependencies
+
+The project uses npm for package management. Install the existing dependencies:
+
+```bash
+npm install
+```
+
+## Install Sui Packages
+
+Now add the Sui-specific packages to the project:
+
+```bash
+npm install @mysten/dapp-kit @mysten/sui @tanstack/react-query
+```
+
+These three packages are required:
 
 1. **@mysten/dapp-kit** - React components and hooks for Sui dApps
 2. **@mysten/sui** - Core Sui TypeScript SDK
 3. **@tanstack/react-query** - Required for data fetching (peer dependency)
 
-## Installation Methods
+## Verify Installation
 
-<Tabs>
-  <Tab title="npm">
-    ```bash npm install @mysten/dapp-kit @mysten/sui @tanstack/react-query ```
-  </Tab>
+After installation, verify the packages were added to your `package.json`:
 
-  <Tab title="pnpm">
-    ```bash pnpm add @mysten/dapp-kit @mysten/sui @tanstack/react-query ```
-  </Tab>
-
-  <Tab title="yarn">
-    ```bash yarn add @mysten/dapp-kit @mysten/sui @tanstack/react-query ```
-  </Tab>
-</Tabs>
+```bash
+npm list @mysten/dapp-kit @mysten/sui @tanstack/react-query
+```
 
 ## Package Overview
 
@@ -76,40 +91,32 @@ React Query is a peer dependency that powers the data fetching hooks in dApp Kit
 - Optimistic updates
 - Request deduplication
 
-## Creating a New Project (Optional)
+## Project Structure
 
-If you're starting from scratch, you can use the official Sui dApp template:
+The workshop repository is a Next.js 15 application with the following structure:
 
-```bash
-npm create @mysten/dapp
+```
+workshop-sui-fe/
+├── src/
+│   ├── app/
+│   │   ├── layout.tsx       # Root layout
+│   │   ├── page.tsx         # Home page (we'll build here)
+│   │   └── globals.css      # Global styles
+│   └── components/
+│       └── ui/              # shadcn/ui components
+├── public/                  # Static assets
+├── package.json
+└── tsconfig.json
 ```
 
-This CLI tool will:
+The project includes:
 
-1. Prompt you to enter a project name
-2. Let you choose a template (react-client-dapp or react-e2e-counter)
-3. Set up a complete project with all dependencies pre-installed
-
-### Available Templates
-
-<CardGroup cols={2}>
-  <Card title="react-client-dapp" icon="react">
-    A basic React dApp that demonstrates wallet connection and fetching owned
-    objects
-  </Card>
-
-  <Card title="react-e2e-counter" icon="arrows-rotate">
-    An end-to-end example with Move smart contract code and UI for a counter app
-  </Card>
-</CardGroup>
-
-Both templates include:
-
-- ✅ React + TypeScript + Vite
-- ✅ @mysten/dapp-kit pre-configured
-- ✅ Radix UI components
-- ✅ ESLint configuration
-- ✅ Example code and best practices
+- ✅ Next.js 15 with App Router
+- ✅ TypeScript
+- ✅ Tailwind CSS v4
+- ✅ shadcn/ui components
+- ✅ React 19
+- ✅ ESLint + Prettier
 
 ## Installing dApp Kit CSS (Optional)
 
