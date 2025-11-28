@@ -184,72 +184,47 @@ import { WalletProvider } from "@mysten/dapp-kit";
 
 #### WalletProvider Configuration Options
 
-<AccordionGroup>
 <Accordion title="preferredWallets">
-**Type:** `string[]`
-
-List of wallet names that should appear at the top of the wallet selection list.
-
-```typescript
-preferredWallets={['Sui Wallet', 'Suiet Wallet', 'Ethos Wallet']}
-```
+  **Type:** `string[]` List of wallet names that should appear at the top of the
+  wallet selection list. ```typescript preferredWallets=
+  {["Sui Wallet", "Suiet Wallet", "Ethos Wallet"]}
+  ```
 </Accordion>
 
 <Accordion title="walletFilter">
-**Type:** `(wallet: Wallet) => boolean`
-
-Function to filter which wallets are available to users.
-
-```typescript
-walletFilter={(wallet) => {
-  // Only show wallets that support certain features
-  return wallet.features.includes('sui:signAndExecuteTransaction');
-}}
-```
+  **Type:** `(wallet: Wallet) => boolean` Function to filter which wallets are
+  available to users. ```typescript walletFilter=
+  {(wallet) => {
+    // Only show wallets that support certain features
+    return wallet.features.includes("sui:signAndExecuteTransaction");
+  }}
+  ```
 </Accordion>
 
 <Accordion title="enableUnsafeBurner">
-**Type:** `boolean`
-
-Enable a development-only burner wallet that generates a temporary keypair. **Never use in production!**
-
-```typescript
-enableUnsafeBurner={process.env.NODE_ENV === 'development'}
-```
+  **Type:** `boolean` Enable a development-only burner wallet that generates a
+  temporary keypair. **Never use in production!** ```typescript
+  enableUnsafeBurner={process.env.NODE_ENV === "development"}
+  ```
 </Accordion>
 
 <Accordion title="autoConnect">
-**Type:** `boolean`
-
-Automatically reconnect to the most recently used wallet when the app loads.
-
-```typescript
-autoConnect={true} // Default: false
-```
+  **Type:** `boolean` Automatically reconnect to the most recently used wallet
+  when the app loads. ```typescript autoConnect={true} // Default: false ```
 </Accordion>
 
 <Accordion title="storage">
-**Type:** `Storage | null`
-
-Storage mechanism for persisting wallet connection. Set to `null` to disable persistence.
-
-```typescript
-storage={window.localStorage} // Default
-// or
-storage={null} // Disable persistence
-```
+  **Type:** `Storage | null` Storage mechanism for persisting wallet connection.
+  Set to `null` to disable persistence. ```typescript storage=
+  {window.localStorage} // Default // or storage={null} // Disable persistence
+  ```
 </Accordion>
 
 <Accordion title="storageKey">
-**Type:** `string`
-
-The key used to store wallet connection data.
-
-```typescript
-storageKey="my-dapp-wallet" // Default: "sui-dapp-kit:wallet-connection-info"
-```
+  **Type:** `string` The key used to store wallet connection data. ```typescript
+  storageKey="my-dapp-wallet" // Default: "sui-dapp-kit:wallet-connection-info"
+  ```
 </Accordion>
-</AccordionGroup>
 
 ## Complete Example
 
