@@ -1,11 +1,36 @@
+```
 ---
-title: "Introduction to Sui dApp Kit"
-description: "Learn how to build frontend applications on the Sui blockchain using React and the Mysten Labs dApp Kit"
+title: "Introduction to Sui Blockchain"
+description: "Learn about Sui's architecture, features, and development ecosystem"
 ---
 
-# Welcome to the Sui Frontend Workshop
+# Welcome to Sui Blockchain Development 🌊
 
-This workshop will guide you through building a decentralized application (dApp) frontend on the Sui blockchain using **@mysten/dapp-kit**, the official React SDK from Mysten Labs.
+Sui is a next-generation Layer 1 blockchain designed for instant transaction finality, high throughput, and low latency. Built by Mysten Labs, Sui introduces revolutionary concepts that make it ideal for building decentralized applications.
+
+## What is Sui?
+
+Sui is a **permissionless** Layer 1 blockchain that redefines asset ownership and programmability. Unlike traditional blockchains, Sui uses an **object-centric** data model where everything is an object, making it more intuitive and efficient for developers.
+
+### Key Features
+
+<CardGroup cols={2}>
+  <Card title="Instant Finality" icon="bolt">
+    Transactions achieve finality in milliseconds, not seconds or minutes
+  </Card>
+
+  <Card title="Parallel Execution" icon="arrows-split-up-and-left">
+    Process thousands of transactions simultaneously using object ownership
+  </Card>
+
+  <Card title="Move Language" icon="code">
+    Smart contracts written in Move, a secure and flexible programming language
+  </Card>
+
+  <Card title="Low Costs" icon="dollar-sign">
+    Extremely low and predictable gas fees for transactions
+  </Card>
+</CardGroup>
 
 ## What You'll Learn
 
@@ -26,58 +51,119 @@ Before starting this workshop, you should have:
 - Familiarity with **React Hooks** and context providers
 - A code editor (VS Code recommended)
 
-## What is Sui?
+## Sui Development Stack
 
-Sui is a Layer 1 blockchain designed for high performance and low latency. It uses the Move programming language and provides a unique object-centric data model.
+This workshop covers the complete Sui development stack:
 
-## What is dApp Kit?
+### Frontend Development
+Build user interfaces that interact with the Sui blockchain using:
+- **React** - Modern UI framework
+- **@mysten/dapp-kit** - Official Sui React SDK
+- **TypeScript** - Type-safe development
+- **@tanstack/react-query** - Data fetching and caching
 
-The **@mysten/dapp-kit** is a collection of React hooks, components, and utilities that make it easy to:
+### Smart Contract Development
+Write on-chain logic using:
+- **Move** - Sui's smart contract language
+- **Sui CLI** - Command-line tools for development
+- **Sui Framework** - Standard library and utilities
+- **Testing Tools** - Unit and integration testing
 
-- Connect to Sui wallets (Sui Wallet, Suiet, Ethos, etc.)
-- Query blockchain data with type-safe React hooks
-- Build and sign transactions
-- Manage wallet state and network configuration
+## Why Build on Sui?
 
-## Workshop Structure
+<AccordionGroup>
+<Accordion title="🚀 High Performance">
+Sui can process **thousands of transactions per second** with sub-second finality. The parallel execution model means your dApp won't be slowed down by network congestion.
+</Accordion>
 
-This workshop is organized into the following sections:
+<Accordion title="💰 Low Cost">
+Gas fees on Sui are **extremely low** and **predictable**, making it economical to build applications with frequent on-chain interactions.
+</Accordion>
+
+<Accordion title="🔒 Secure by Design">
+Move's type system and ownership model prevent common smart contract vulnerabilities like reentrancy attacks and integer overflows.
+</Accordion>
+
+<Accordion title="👨‍💻 Developer Friendly">
+Comprehensive documentation, robust tooling, and an active community make it easy to get started and get help when needed.
+</Accordion>
+</AccordionGroup>
+
+## Development Paths
+
+Choose your learning journey based on your interests:
 
 <CardGroup cols={2}>
+  <Card title="Frontend Development" icon="code" href="/frontend/02-installation">
+    Learn to build React dApps with wallet connection, data querying, and transaction signing
+  </Card>
 
-<Card title="Installation" icon="download" href="/frontend/02-installation">
-  Install the Sui SDK and dApp Kit dependencies
-</Card>
-
-<Card
-  title="Setup Providers"
-  icon="layer-group"
-  href="/frontend/03-setup-providers"
->
-  Configure network and wallet providers for your app
-</Card>
-
-<Card
-  title="Connect Wallet"
-  icon="wallet"
-  href="/frontend/04-connect-wallet"
->
-  Add wallet connection functionality with UI components
-</Card>
-
-<Card title="Read Data" icon="book-open" href="/frontend/05-read-data">
-  Query blockchain data using React hooks
-</Card>
-
-<Card
-  title="Sign Transactions"
-  icon="signature"
-  href="/frontend/06-sign-transactions"
->
-  Build, sign, and execute transactions
-</Card>
-
+  <Card title="Smart Contracts" icon="file-contract" href="/smart-contract/getting-started">
+    Master Move programming to create secure and efficient on-chain logic
+  </Card>
 </CardGroup>
+
+## What You'll Build
+
+By the end of this workshop, you'll be able to:
+
+**Frontend Development:**
+- ✅ Connect users' Sui wallets to your dApp
+- ✅ Query blockchain data efficiently
+- ✅ Display user balances and owned objects
+- ✅ Build and execute transactions
+- ✅ Handle errors and edge cases gracefully
+
+**Smart Contract Development:**
+- ✅ Write Move modules with proper structure
+- ✅ Define custom types and objects
+- ✅ Implement transfer and ownership logic
+- ✅ Deploy contracts to Sui networks
+- ✅ Test contracts thoroughly
+
+## Getting Started
+
+Ready to start building? Choose your path:
+
+<Steps>
+  <Step title="Frontend Workshop">
+    Head to [Installation](/frontend/02-installation) to set up your development environment and start building React dApps.
+  </Step>
+
+  <Step title="Smart Contracts">
+    Jump to [Smart Contracts](/smart-contract/getting-started) to learn Move programming and deploy your first contract.
+  </Step>
+</Steps>
+
+## Resources
+
+<CardGroup cols={3}>
+  <Card title="Sui Documentation" icon="book" href="https://docs.sui.io">
+    Official docs and guides
+  </Card>
+
+  <Card title="SDK Reference" icon="code" href="https://sdk.mystenlabs.com">
+    Complete API reference
+  </Card>
+
+  <Card title="Move Book" icon="book-open" href="https://move-book.com">
+    Learn Move programming
+  </Card>
+
+  <Card title="GitHub Examples" icon="github" href="https://github.com/MystenLabs">
+    Sample code and projects
+  </Card>
+
+  <Card title="Discord Community" icon="discord" href="https://discord.com/invite/Sui">
+    Get help from developers
+  </Card>
+
+  <Card title="Sui Explorer" icon="magnifying-glass" href="https://suiscan.xyz">
+    Explore the blockchain
+  </Card>
+</CardGroup>
+
+Let's start building on Sui! 🚀
 
 ## Tech Stack
 
@@ -102,3 +188,4 @@ Ready to get started? Let's begin by installing the necessary dependencies.
 >
   Move to the next section to install the Sui SDK
 </Card>
+```
