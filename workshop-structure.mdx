@@ -1,0 +1,236 @@
+---
+title: "Workshop Structure"
+description: "Flexible multi-day workshop organization for Sui development"
+---
+
+# Workshop Structure Guide
+
+This documentation supports flexible multi-day workshops on Sui development. You can organize content by days and mix frontend and smart contract topics based on your needs.
+
+## Current Workshop Schedule
+
+The default schedule is organized as follows:
+
+### Day 1: Frontend Basics
+
+**Focus:** Getting started with Sui dApp development
+
+<CardGroup cols={3}>
+  <Card title="Installation" icon="download" href="/frontend/02-installation">
+    Set up development environment
+  </Card>
+
+  <Card
+    title="Setup Providers"
+    icon="layer-group"
+    href="/frontend/03-setup-providers"
+  >
+    Configure React providers
+  </Card>
+
+  <Card title="Connect Wallet" icon="wallet" href="/frontend/04-connect-wallet">
+    Implement wallet connection
+  </Card>
+</CardGroup>
+
+**Duration:** 3-4 hours  
+**Prerequisites:** Node.js, React basics
+
+---
+
+### Day 2: Frontend Advanced
+
+**Focus:** Blockchain interaction and transactions
+
+<CardGroup cols={2}>
+  <Card title="Read Data" icon="book-open" href="/frontend/05-read-data">
+    Query blockchain data
+  </Card>
+
+  <Card
+    title="Sign Transactions"
+    icon="pen"
+    href="/frontend/06-sign-transactions"
+  >
+    Build and execute transactions
+  </Card>
+</CardGroup>
+
+**Duration:** 3-4 hours  
+**Prerequisites:** Day 1 completion
+
+---
+
+### Day 3: Smart Contracts Basics
+
+**Focus:** Introduction to Move programming
+
+<CardGroup cols={3}>
+  <Card
+    title="Getting Started"
+    icon="rocket"
+    href="/smart-contract/01-getting-started"
+  >
+    Introduction to Move
+  </Card>
+
+  <Card
+    title="Environment Setup"
+    icon="wrench"
+    href="/smart-contract/02-environment-setup"
+  >
+    Install Sui CLI
+  </Card>
+
+  <Card title="Move Basics" icon="code" href="/smart-contract/03-move-basics">
+    Learn Move syntax
+  </Card>
+</CardGroup>
+
+**Duration:** 3-4 hours  
+**Prerequisites:** Basic programming knowledge
+
+---
+
+## Flexible Scheduling
+
+You can reorganize the workshop to fit your needs:
+
+<Tabs>
+  <Tab title="3-Day Frontend Focus">
+    **Day 1:** Installation + Setup Providers **Day 2:** Connect Wallet + Read
+    Data **Day 3:** Sign Transactions + Advanced Patterns
+  </Tab>
+
+  <Tab title="3-Day Balanced">
+    **Day 1:** Frontend Basics (Installation → Connect Wallet) **Day 2:**
+    Frontend Advanced (Read Data → Transactions) **Day 3:** Smart Contracts
+    (Intro → Move Basics)
+  </Tab>
+
+  <Tab title="5-Day Deep Dive">
+    **Day 1:** Frontend Installation + Setup **Day 2:** Frontend Wallet + Data
+    **Day 3:** Frontend Transactions **Day 4:** Smart Contracts Setup + Basics
+    **Day 5:** Smart Contracts Advanced
+  </Tab>
+
+  <Tab title="2-Day Intensive">
+    **Day 1:** Frontend (All modules) **Day 2:** Smart Contracts (Intro + Setup)
+  </Tab>
+</Tabs>
+
+## Customizing Your Workshop
+
+To customize the workshop schedule:
+
+1. **Choose Your Focus**
+
+   - Frontend-only workshop
+   - Smart contracts-only workshop
+   - Balanced full-stack workshop
+
+2. **Set Daily Goals**
+
+   - Define learning objectives for each day
+   - Allocate time based on complexity
+   - Include hands-on exercises
+
+3. **Mix and Match**
+   - Combine modules from Frontend and Smart Contracts tabs
+   - Add breaks and Q&A sessions
+   - Include project time for practice
+
+## Example Workshop Configurations
+
+### Configuration 1: Frontend Bootcamp (2 Days)
+
+```
+Day 1 Morning:  Installation + Setup Providers
+Day 1 Afternoon: Connect Wallet
+Day 2 Morning:  Read Data
+Day 2 Afternoon: Sign Transactions + Project
+```
+
+### Configuration 2: Smart Contracts Focus (3 Days)
+
+```
+Day 1: Environment Setup + Move Basics
+Day 2: Writing Contracts + Testing
+Day 3: Deployment + Advanced Patterns
+```
+
+### Configuration 3: Full Stack (5 Days)
+
+```
+Day 1: Frontend Installation + Setup + Connect Wallet
+Day 2: Frontend Read Data + Transactions
+Day 3: Smart Contracts Intro + Environment Setup
+Day 4: Move Basics + First Contract
+Day 5: Integration - Connect Frontend to Your Contracts
+```
+
+## Navigation Guide
+
+<AccordionGroup>
+<Accordion title="Workshop Days Tab">
+Pre-organized day-by-day schedule (default 3-day configuration)
+</Accordion>
+
+<Accordion title="Frontend Tab">
+  All frontend modules organized by topic for reference
+</Accordion>
+
+<Accordion title="Smart Contracts Tab">
+  All smart contract modules organized by topic for reference
+</Accordion>
+
+<Accordion title="Introduction Tab">
+General information about Sui and workshop overview
+</Accordion>
+</AccordionGroup>
+
+## Tips for Workshop Organizers
+
+<Steps>
+  <Step title="Assess Your Audience">
+    Understand their background in React, blockchain, and programming
+  </Step>
+
+  <Step title="Set Clear Objectives">
+    Define what participants should be able to build by the end
+  </Step>
+
+  <Step title="Prepare Environment">
+    Ensure all prerequisites are installed beforehand
+  </Step>
+
+  <Step title="Include Practice Time">
+    Allocate time for hands-on exercises and projects
+  </Step>
+
+  <Step title="Provide Support">
+    Have helpers available for troubleshooting
+  </Step>
+</Steps>
+
+## Ready to Start?
+
+Choose your workshop path:
+
+<CardGroup cols={2}>
+  <Card
+    title="Follow Workshop Days"
+    icon="calendar"
+    href="/frontend/02-installation"
+  >
+    Use the pre-organized 3-day schedule
+  </Card>
+
+  <Card
+    title="Browse by Topic"
+    icon="book"
+    href="/introduction/01-introduction"
+  >
+    Create your own custom schedule
+  </Card>
+</CardGroup>

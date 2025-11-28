@@ -31,13 +31,13 @@
         "tab": "Frontend",
         "groups": [
           {
-            "group": "Workshop Modules",
+            "group": "Day 1 - Workshop",
             "pages": [
-              "frontend/02-installation",
-              "frontend/03-setup-providers",
-              "frontend/04-connect-wallet",
-              "frontend/05-read-data",
-              "frontend/06-sign-transactions"
+              "frontend/day-1/01-installation",
+              "frontend/day-1/02-setup-providers",
+              "frontend/day-1/03-connect-wallet",
+              "frontend/day-1/04-read-data",
+              "frontend/day-1/05-sign-transactions"
             ]
           }
         ]
@@ -46,16 +46,11 @@
         "tab": "Smart Contracts",
         "groups": [
           {
-            "group": "Getting Started",
+            "group": "Day 1 - Move Basics",
             "pages": [
-              "smart-contract/01-getting-started",
-              "smart-contract/02-environment-setup"
-            ]
-          },
-          {
-            "group": "Move Programming",
-            "pages": [
-              "smart-contract/03-move-basics"
+              "smart-contract/day-1/01-getting-started",
+              "smart-contract/day-1/02-environment-setup",
+              "smart-contract/day-1/03-move-basics"
             ]
           }
         ]
