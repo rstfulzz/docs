@@ -31,7 +31,7 @@
         "tab": "Frontend",
         "groups": [
           {
-            "group": "Day 1 - Workshop",
+            "group": "Day 1 - Frontend Basics",
             "pages": [
               "frontend/day-1/01-installation",
               "frontend/day-1/02-setup-providers",
