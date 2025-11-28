@@ -17,17 +17,17 @@
             "group": "Getting Started",
             "pages": [
               "index",
-              "sui-workshop/01-introduction"
+              "01-introduction"
             ]
           },
           {
             "group": "Workshop Modules",
             "pages": [
-              "sui-workshop/02-installation",
-              "sui-workshop/03-setup-providers",
-              "sui-workshop/04-connect-wallet",
-              "sui-workshop/05-read-data",
-              "sui-workshop/06-sign-transactions"
+              "02-installation",
+              "03-setup-providers",
+              "04-connect-wallet",
+              "05-read-data",
+              "06-sign-transactions"
             ]
           }
         ]
