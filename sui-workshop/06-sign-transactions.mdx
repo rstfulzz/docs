@@ -652,41 +652,38 @@ signAndExecute(
 ## Best Practices
 
 <AccordionGroup>
-  <Accordion title="Always validate user input">
-    Validate addresses, amounts, and other inputs before building transactions.
-    
-    ```typescript
-    if (!isValidSuiAddress(recipient)) {
-      setError('Invalid address');
-      return;
-    }
-    ```
-  </Accordion>
+<Accordion title="Always validate user input">
+Validate addresses, amounts, and other inputs before building transactions.
 
-{" "}
+```typescript
+if (!isValidSuiAddress(recipient)) {
+  setError('Invalid address');
+  return;
+}
+```
+</Accordion>
+
 <Accordion title="Handle all error cases">
-  Provide clear error messages for common failures like insufficient balance,
-  user rejection, and network errors.
+Provide clear error messages for common failures like insufficient balance, user rejection, and network errors.
 </Accordion>
 
-{" "}
 <Accordion title="Show transaction status">
-  Use loading states and success/error feedback to improve UX. ```typescript
-  {isPending && <Spinner />}
-  {isSuccess && <SuccessMessage />}
-  {isError && <ErrorMessage />}
-  ```
+Use loading states and success/error feedback to improve UX.
+
+```typescript
+{isPending && <Spinner />}
+{isSuccess && <SuccessMessage />}
+{isError && <ErrorMessage />}
+```
 </Accordion>
 
-{" "}
 <Accordion title="Link to block explorer">
-  After successful transactions, provide a link to view on a block explorer like
-  Suiscan or Suivision.
+After successful transactions, provide a link to view on a block explorer like Suiscan or Suivision.
 </Accordion>
 
-  <Accordion title="Test on testnet first">
-    Always test transactions on testnet before deploying to mainnet.
-  </Accordion>
+<Accordion title="Test on testnet first">
+Always test transactions on testnet before deploying to mainnet.
+</Accordion>
 </AccordionGroup>
 
 ## Congratulations! 🎉
