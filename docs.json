@@ -11,7 +11,7 @@
   "navigation": {
     "tabs": [
       {
-        "tab": "Workshop",
+        "tab": "Frontend",
         "groups": [
           {
             "group": "Getting Started",
@@ -29,6 +29,15 @@
               "sui-workshop/05-read-data",
               "sui-workshop/06-sign-transactions"
             ]
+          }
+        ]
+      },
+      {
+        "tab": "Contracts",
+        "groups": [
+          {
+            "group": "Smart Contracts",
+            "pages": []
           }
         ]
       }
