@@ -1,0 +1,510 @@
+---
+title: "Read Data"
+description: "Query blockchain data using React hooks and the Sui client"
+---
+
+# Reading Blockchain Data
+
+Learn how to query data from the Sui blockchain using React hooks and the SuiClient.
+
+## Query Hooks Overview
+
+The dApp Kit provides React hooks powered by @tanstack/react-query for fetching blockchain data:
+
+- **useSuiClientQuery** - Query any Sui RPC method
+- **useSuiClientQueries** - Query multiple RPC methods in parallel
+- **useSuiClientInfiniteQuery** - Query paginated data with infinite scroll
+- **useSuiClient** - Get the raw SuiClient instance
+
+All hooks provide:
+
+- ✅ Automatic caching and refetching
+- ✅ Loading and error states
+- ✅ Type-safe parameters and responses
+- ✅ Request deduplication
+
+## useSuiClientQuery
+
+The primary hook for querying blockchain data:
+
+```typescript
+import { useSuiClientQuery } from "@mysten/dapp-kit";
+
+function MyComponent() {
+  const { data, isPending, error, refetch } = useSuiClientQuery(
+    "getOwnedObjects",
+    {
+      owner: "0x123...",
+    }
+  );
+
+  if (isPending) return <div>Loading...</div>;
+  if (error) return <div>Error: {error.message}</div>;
+
+  return <pre>{JSON.stringify(data, null, 2)}</pre>;
+}
+```
+
+### Syntax
+
+```typescript
+const result = useSuiClientQuery(
+  method, // RPC method name
+  params, // Method parameters
+  options // React Query options (optional)
+);
+```
+
+## Common Query Examples
+
+### Get Owned Objects
+
+Fetch all objects owned by an address:
+
+```typescript
+import { useSuiClientQuery, useCurrentAccount } from "@mysten/dapp-kit";
+
+function MyObjects() {
+  const account = useCurrentAccount();
+
+  const { data, isPending } = useSuiClientQuery(
+    "getOwnedObjects",
+    {
+      owner: account?.address as string,
+    },
+    {
+      enabled: !!account, // Only run when account exists
+    }
+  );
+
+  if (!account) {
+    return <div>Please connect your wallet</div>;
+  }
+
+  if (isPending) {
+    return <div>Loading your objects...</div>;
+  }
+
+  return (
+    <div>
+      <h3>Your Objects ({data?.data.length})</h3>
+      <ul>
+        {data?.data.map((obj) => (
+          <li key={obj.data?.objectId}>{obj.data?.objectId}</li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+```
+
+### Get SUI Balance
+
+Check the SUI balance of an address:
+
+```typescript
+import { useSuiClientQuery, useCurrentAccount } from "@mysten/dapp-kit";
+
+function Balance() {
+  const account = useCurrentAccount();
+
+  const { data } = useSuiClientQuery(
+    "getBalance",
+    {
+      owner: account?.address as string,
+    },
+    {
+      enabled: !!account,
+    }
+  );
+
+  const balance = Number(data?.totalBalance ?? 0) / 1_000_000_000; // Convert MIST to SUI
+
+  return <div>Balance: {balance.toFixed(4)} SUI</div>;
+}
+```
+
+### Get All Balances
+
+Get balances for all coin types:
+
+```typescript
+import { useSuiClientQuery, useCurrentAccount } from "@mysten/dapp-kit";
+
+function AllBalances() {
+  const account = useCurrentAccount();
+
+  const { data } = useSuiClientQuery(
+    "getAllBalances",
+    {
+      owner: account?.address as string,
+    },
+    {
+      enabled: !!account,
+    }
+  );
+
+  return (
+    <div>
+      <h3>All Balances</h3>
+      {data?.map((balance) => (
+        <div key={balance.coinType}>
+          {balance.coinType}: {balance.totalBalance}
+        </div>
+      ))}
+    </div>
+  );
+}
+```
+
+### Get Object Details
+
+Fetch details of a specific object:
+
+```typescript
+import { useSuiClientQuery } from "@mysten/dapp-kit";
+
+function ObjectDetails({ objectId }: { objectId: string }) {
+  const { data, isPending } = useSuiClientQuery("getObject", {
+    id: objectId,
+    options: {
+      showContent: true,
+      showOwner: true,
+      showType: true,
+    },
+  });
+
+  if (isPending) return <div>Loading...</div>;
+
+  return (
+    <div>
+      <h3>Object: {objectId}</h3>
+      <pre>{JSON.stringify(data, null, 2)}</pre>
+    </div>
+  );
+}
+```
+
+### Get Transaction Details
+
+Fetch details of a transaction:
+
+```typescript
+import { useSuiClientQuery } from "@mysten/dapp-kit";
+
+function TransactionDetails({ digest }: { digest: string }) {
+  const { data } = useSuiClientQuery("getTransactionBlock", {
+    digest,
+    options: {
+      showEffects: true,
+      showEvents: true,
+      showInput: true,
+      showObjectChanges: true,
+    },
+  });
+
+  return (
+    <div>
+      <h3>Transaction: {digest}</h3>
+      <p>Status: {data?.effects?.status?.status}</p>
+      <p>Gas Used: {data?.effects?.gasUsed?.computationCost}</p>
+    </div>
+  );
+}
+```
+
+### Query with Filters
+
+Use filters to narrow down results:
+
+```typescript
+import { useSuiClientQuery, useCurrentAccount } from "@mysten/dapp-kit";
+
+function FilteredObjects() {
+  const account = useCurrentAccount();
+
+  const { data } = useSuiClientQuery(
+    "getOwnedObjects",
+    {
+      owner: account?.address as string,
+      filter: {
+        StructType: "0x2::coin::Coin<0x2::sui::SUI>",
+      },
+      options: {
+        showContent: true,
+        showType: true,
+      },
+    },
+    {
+      enabled: !!account,
+    }
+  );
+
+  return (
+    <div>
+      <h3>SUI Coins</h3>
+      {data?.data.map((obj) => (
+        <div key={obj.data?.objectId}>Object: {obj.data?.objectId}</div>
+      ))}
+    </div>
+  );
+}
+```
+
+## Pagination with useSuiClientInfiniteQuery
+
+For paginated data like transaction history:
+
+```typescript
+import { useSuiClientInfiniteQuery, useCurrentAccount } from "@mysten/dapp-kit";
+
+function TransactionHistory() {
+  const account = useCurrentAccount();
+
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useSuiClientInfiniteQuery(
+      "queryTransactionBlocks",
+      {
+        filter: {
+          FromAddress: account?.address as string,
+        },
+        options: {
+          showEffects: true,
+        },
+      },
+      {
+        enabled: !!account,
+      }
+    );
+
+  const allTransactions = data?.pages.flatMap((page) => page.data) ?? [];
+
+  return (
+    <div>
+      <h3>Transaction History</h3>
+      <ul>
+        {allTransactions.map((tx) => (
+          <li key={tx.digest}>{tx.digest}</li>
+        ))}
+      </ul>
+
+      {hasNextPage && (
+        <button onClick={() => fetchNextPage()} disabled={isFetchingNextPage}>
+          {isFetchingNextPage ? "Loading..." : "Load More"}
+        </button>
+      )}
+    </div>
+  );
+}
+```
+
+## Multiple Queries with useSuiClientQueries
+
+Run multiple queries in parallel:
+
+```typescript
+import { useSuiClientQueries, useCurrentAccount } from "@mysten/dapp-kit";
+
+function Dashboard() {
+  const account = useCurrentAccount();
+
+  const results = useSuiClientQueries({
+    queries: [
+      {
+        method: "getBalance",
+        params: { owner: account?.address as string },
+        enabled: !!account,
+      },
+      {
+        method: "getOwnedObjects",
+        params: { owner: account?.address as string },
+        enabled: !!account,
+      },
+      {
+        method: "getAllBalances",
+        params: { owner: account?.address as string },
+        enabled: !!account,
+      },
+    ],
+  });
+
+  const [balanceQuery, objectsQuery, allBalancesQuery] = results;
+
+  if (results.some((r) => r.isPending)) {
+    return <div>Loading...</div>;
+  }
+
+  return (
+    <div>
+      <div>SUI Balance: {balanceQuery.data?.totalBalance}</div>
+      <div>Objects: {objectsQuery.data?.data.length}</div>
+      <div>Coin Types: {allBalancesQuery.data?.length}</div>
+    </div>
+  );
+}
+```
+
+## Direct Client Access
+
+For advanced use cases, access the SuiClient directly:
+
+```typescript
+import { useSuiClient } from "@mysten/dapp-kit";
+import { useEffect, useState } from "react";
+
+function CustomQuery() {
+  const client = useSuiClient();
+  const [data, setData] = useState(null);
+
+  useEffect(() => {
+    async function fetchData() {
+      // Use any SuiClient method
+      const result = await client.getChainIdentifier();
+      setData(result);
+    }
+
+    fetchData();
+  }, [client]);
+
+  return <div>Chain ID: {data}</div>;
+}
+```
+
+## React Query Options
+
+Customize query behavior with React Query options:
+
+```typescript
+const { data } = useSuiClientQuery(
+  "getOwnedObjects",
+  { owner: address },
+  {
+    // Enable/disable query
+    enabled: !!address,
+
+    // Refetch interval (ms)
+    refetchInterval: 10000, // Refetch every 10 seconds
+
+    // Stale time (ms)
+    staleTime: 5000, // Data fresh for 5 seconds
+
+    // Cache time (ms)
+    gcTime: 60000, // Keep in cache for 1 minute
+
+    // Retry failed queries
+    retry: 3,
+
+    // Only refetch on window focus
+    refetchOnWindowFocus: true,
+
+    // Success callback
+    onSuccess: (data) => {
+      console.log("Data loaded:", data);
+    },
+
+    // Error callback
+    onError: (error) => {
+      console.error("Query failed:", error);
+    },
+  }
+);
+```
+
+## Complete Example: NFT Gallery
+
+A complete example showing NFT objects:
+
+```typescript title="src/components/NFTGallery.tsx"
+import { useSuiClientQuery, useCurrentAccount } from "@mysten/dapp-kit";
+
+export function NFTGallery() {
+  const account = useCurrentAccount();
+
+  const { data, isPending, error, refetch } = useSuiClientQuery(
+    "getOwnedObjects",
+    {
+      owner: account?.address as string,
+      options: {
+        showContent: true,
+        showType: true,
+        showDisplay: true,
+      },
+    },
+    {
+      enabled: !!account,
+      refetchInterval: 30000, // Refresh every 30 seconds
+    }
+  );
+
+  if (!account) {
+    return (
+      <div className="nft-gallery">
+        <p>Connect your wallet to view your NFTs</p>
+      </div>
+    );
+  }
+
+  if (isPending) {
+    return <div>Loading your NFTs...</div>;
+  }
+
+  if (error) {
+    return (
+      <div>
+        <p>Error loading NFTs: {error.message}</p>
+        <button onClick={() => refetch()}>Retry</button>
+      </div>
+    );
+  }
+
+  const nfts = data?.data ?? [];
+
+  return (
+    <div className="nft-gallery">
+      <div className="gallery-header">
+        <h2>My NFTs ({nfts.length})</h2>
+        <button onClick={() => refetch()}>Refresh</button>
+      </div>
+
+      <div className="nft-grid">
+        {nfts.map((nft) => (
+          <div key={nft.data?.objectId} className="nft-card">
+            <div className="nft-image">
+              {nft.data?.display?.data?.image_url && (
+                <img
+                  src={nft.data.display.data.image_url}
+                  alt={nft.data.display.data.name || "NFT"}
+                />
+              )}
+            </div>
+            <div className="nft-info">
+              <h3>{nft.data?.display?.data?.name || "Unnamed"}</h3>
+              <p>{nft.data?.display?.data?.description}</p>
+              <code>{nft.data?.objectId}</code>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {nfts.length === 0 && (
+        <div className="empty-state">
+          <p>No NFTs found in this wallet</p>
+        </div>
+      )}
+    </div>
+  );
+}
+```
+
+## Next Steps
+
+Now that you can read data from the blockchain, let's learn how to sign and execute transactions.
+
+<Card
+  title="Sign Transactions"
+  icon="arrow-right"
+  href="/sui-workshop/06-sign-transactions"
+  horizontal
+>
+  Build, sign, and execute transactions
+</Card>

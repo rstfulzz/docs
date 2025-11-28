@@ -1,0 +1,734 @@
+---
+title: "Sign Transactions"
+description: "Build, sign, and execute transactions on the Sui blockchain"
+---
+
+# Signing and Executing Transactions
+
+Learn how to build, sign, and execute transactions on the Sui blockchain using the dApp Kit.
+
+## Transaction Workflow
+
+Executing a transaction involves three steps:
+
+1. **Build** - Create a transaction block with commands
+2. **Sign** - Sign the transaction with the user's wallet
+3. **Execute** - Submit the signed transaction to the blockchain
+
+## Transaction Hooks
+
+The dApp Kit provides hooks for transaction operations:
+
+| Hook                           | Purpose                                    |
+| ------------------------------ | ------------------------------------------ |
+| `useSignAndExecuteTransaction` | Sign and execute a transaction in one step |
+| `useSignTransaction`           | Only sign a transaction (doesn't execute)  |
+| `useExecuteTransaction`        | Execute a pre-signed transaction           |
+
+## useSignAndExecuteTransaction
+
+The most common hook for executing transactions:
+
+```typescript
+import { useSignAndExecuteTransaction } from "@mysten/dapp-kit";
+import { Transaction } from "@mysten/sui/transactions";
+
+function TransferSUI() {
+  const { mutate: signAndExecute } = useSignAndExecuteTransaction();
+
+  const handleTransfer = () => {
+    const tx = new Transaction();
+
+    // Split 1 SUI from gas coin
+    const [coin] = tx.splitCoins(tx.gas, [1_000_000_000]); // 1 SUI = 1B MIST
+
+    // Transfer to recipient
+    tx.transferObjects([coin], "0xRecipientAddress...");
+
+    signAndExecute(
+      {
+        transaction: tx,
+      },
+      {
+        onSuccess: (result) => {
+          console.log("Transaction successful!", result);
+        },
+        onError: (error) => {
+          console.error("Transaction failed:", error);
+        },
+      }
+    );
+  };
+
+  return <button onClick={handleTransfer}>Transfer 1 SUI</button>;
+}
+```
+
+### Hook Signature
+
+```typescript
+const {
+  mutate, // Execute the transaction
+  mutateAsync, // Execute with async/await
+  isPending, // Transaction in progress
+  isSuccess, // Transaction succeeded
+  isError, // Transaction failed
+  data, // Transaction result
+  error, // Error object if failed
+} = useSignAndExecuteTransaction();
+```
+
+## Building Transactions
+
+Use the `Transaction` class to build programmable transaction blocks:
+
+```typescript
+import { Transaction } from "@mysten/sui/transactions";
+
+const tx = new Transaction();
+```
+
+### Transfer SUI
+
+Transfer SUI to another address:
+
+```typescript
+import {
+  useSignAndExecuteTransaction,
+  useCurrentAccount,
+} from "@mysten/dapp-kit";
+import { Transaction } from "@mysten/sui/transactions";
+
+function TransferSUI({
+  recipient,
+  amount,
+}: {
+  recipient: string;
+  amount: number;
+}) {
+  const { mutate: signAndExecute } = useSignAndExecuteTransaction();
+  const account = useCurrentAccount();
+
+  const handleTransfer = () => {
+    const tx = new Transaction();
+
+    // Split coins from gas
+    const [coin] = tx.splitCoins(tx.gas, [amount]);
+
+    // Transfer to recipient
+    tx.transferObjects([coin], recipient);
+
+    signAndExecute(
+      {
+        transaction: tx,
+      },
+      {
+        onSuccess: ({ digest }) => {
+          console.log(`Transaction digest: ${digest}`);
+        },
+      }
+    );
+  };
+
+  return (
+    <button onClick={handleTransfer} disabled={!account}>
+      Transfer {amount / 1_000_000_000} SUI
+    </button>
+  );
+}
+```
+
+### Transfer Objects
+
+Transfer any object(s) to another address:
+
+```typescript
+function TransferObject({
+  objectId,
+  recipient,
+}: {
+  objectId: string;
+  recipient: string;
+}) {
+  const { mutate: signAndExecute } = useSignAndExecuteTransaction();
+
+  const handleTransfer = () => {
+    const tx = new Transaction();
+
+    // Transfer object
+    tx.transferObjects([tx.object(objectId)], recipient);
+
+    signAndExecute({ transaction: tx });
+  };
+
+  return <button onClick={handleTransfer}>Transfer Object</button>;
+}
+```
+
+### Batch Transfers
+
+Transfer to multiple recipients in a single transaction:
+
+```typescript
+interface Transfer {
+  to: string;
+  amount: number;
+}
+
+function BatchTransfer({ transfers }: { transfers: Transfer[] }) {
+  const { mutate: signAndExecute } = useSignAndExecuteTransaction();
+
+  const handleBatchTransfer = () => {
+    const tx = new Transaction();
+
+    // Split coins for all transfers
+    const coins = tx.splitCoins(
+      tx.gas,
+      transfers.map((t) => t.amount)
+    );
+
+    // Transfer each coin to its recipient
+    transfers.forEach((transfer, index) => {
+      tx.transferObjects([coins[index]], transfer.to);
+    });
+
+    signAndExecute({
+      transaction: tx,
+    });
+  };
+
+  return (
+    <button onClick={handleBatchTransfer}>
+      Send to {transfers.length} Recipients
+    </button>
+  );
+}
+```
+
+### Merge Coins
+
+Merge multiple coin objects into one:
+
+```typescript
+function MergeCoins({ coinIds }: { coinIds: string[] }) {
+  const { mutate: signAndExecute } = useSignAndExecuteTransaction();
+
+  const handleMerge = () => {
+    const tx = new Transaction();
+
+    // Merge all coins into the first one
+    const [primaryCoin, ...coinsToMerge] = coinIds;
+
+    tx.mergeCoins(
+      tx.object(primaryCoin),
+      coinsToMerge.map((id) => tx.object(id))
+    );
+
+    signAndExecute({ transaction: tx });
+  };
+
+  return <button onClick={handleMerge}>Merge {coinIds.length} Coins</button>;
+}
+```
+
+## Move Function Calls
+
+Call Move functions from your dApp:
+
+```typescript
+function CallMoveFunction() {
+  const { mutate: signAndExecute } = useSignAndExecuteTransaction();
+
+  const handleCall = () => {
+    const tx = new Transaction();
+
+    // Call a Move function
+    tx.moveCall({
+      target: "0xPackageId::module_name::function_name",
+      arguments: [
+        tx.pure.string("argument1"),
+        tx.pure.u64(123),
+        tx.object("0xObjectId"),
+      ],
+      typeArguments: ["0x2::sui::SUI"],
+    });
+
+    signAndExecute({ transaction: tx });
+  };
+
+  return <button onClick={handleCall}>Call Move Function</button>;
+}
+```
+
+### Move Call Example: Mint NFT
+
+```typescript
+function MintNFT({
+  name,
+  description,
+  imageUrl,
+}: {
+  name: string;
+  description: string;
+  imageUrl: string;
+}) {
+  const { mutate: signAndExecute, isPending } = useSignAndExecuteTransaction();
+
+  const handleMint = () => {
+    const tx = new Transaction();
+
+    tx.moveCall({
+      target: "0xYourPackage::nft::mint",
+      arguments: [
+        tx.pure.string(name),
+        tx.pure.string(description),
+        tx.pure.string(imageUrl),
+      ],
+    });
+
+    signAndExecute(
+      {
+        transaction: tx,
+      },
+      {
+        onSuccess: ({ digest }) => {
+          console.log("NFT minted!", digest);
+          alert("NFT minted successfully!");
+        },
+        onError: (error) => {
+          console.error("Mint failed:", error);
+          alert("Failed to mint NFT");
+        },
+      }
+    );
+  };
+
+  return (
+    <button onClick={handleMint} disabled={isPending}>
+      {isPending ? "Minting..." : "Mint NFT"}
+    </button>
+  );
+}
+```
+
+## Transaction Options
+
+Customize transaction execution with options:
+
+```typescript
+signAndExecute(
+  {
+    transaction: tx,
+    options: {
+      // Show transaction effects
+      showEffects: true,
+      // Show events emitted
+      showEvents: true,
+      // Show object changes
+      showObjectChanges: true,
+      // Show transaction input
+      showInput: true,
+      // Show balance changes
+      showBalanceChanges: true,
+    },
+  },
+  {
+    onSuccess: (result) => {
+      console.log("Effects:", result.effects);
+      console.log("Events:", result.events);
+      console.log("Object Changes:", result.objectChanges);
+    },
+  }
+);
+```
+
+## Error Handling
+
+Handle transaction errors properly:
+
+```typescript
+import { useSignAndExecuteTransaction } from "@mysten/dapp-kit";
+import { Transaction } from "@mysten/sui/transactions";
+import { useState } from "react";
+
+function TransferWithErrorHandling() {
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState(false);
+  const { mutate: signAndExecute, isPending } = useSignAndExecuteTransaction();
+
+  const handleTransfer = () => {
+    setError(null);
+    setSuccess(false);
+
+    const tx = new Transaction();
+    const [coin] = tx.splitCoins(tx.gas, [1_000_000_000]);
+    tx.transferObjects([coin], "0xRecipient...");
+
+    signAndExecute(
+      {
+        transaction: tx,
+      },
+      {
+        onSuccess: ({ digest }) => {
+          setSuccess(true);
+          console.log("Transaction successful:", digest);
+        },
+        onError: (err) => {
+          // Parse error message
+          if (err.message.includes("Insufficient")) {
+            setError("Insufficient balance");
+          } else if (err.message.includes("rejected")) {
+            setError("Transaction rejected by user");
+          } else if (err.message.includes("gas")) {
+            setError("Not enough gas to execute transaction");
+          } else {
+            setError("Transaction failed. Please try again.");
+          }
+          console.error("Transaction error:", err);
+        },
+      }
+    );
+  };
+
+  return (
+    <div>
+      <button onClick={handleTransfer} disabled={isPending}>
+        {isPending ? "Processing..." : "Transfer SUI"}
+      </button>
+
+      {error && <div className="error-message">❌ {error}</div>}
+
+      {success && (
+        <div className="success-message">✅ Transfer successful!</div>
+      )}
+    </div>
+  );
+}
+```
+
+## Sign-Only Transactions
+
+Sometimes you need to sign without executing:
+
+```typescript
+import { useSignTransaction } from "@mysten/dapp-kit";
+import { Transaction } from "@mysten/sui/transactions";
+
+function SignOnly() {
+  const { mutateAsync: signTransaction } = useSignTransaction();
+
+  const handleSign = async () => {
+    const tx = new Transaction();
+    tx.transferObjects([tx.gas], "0xRecipient...");
+
+    const { signature, transactionBlockBytes } = await signTransaction({
+      transaction: tx,
+    });
+
+    console.log("Signature:", signature);
+    console.log("Transaction bytes:", transactionBlockBytes);
+
+    // You can now send these to a backend or execute later
+  };
+
+  return <button onClick={handleSign}>Sign Transaction</button>;
+}
+```
+
+## Execute Pre-Signed Transaction
+
+Execute a transaction that was signed elsewhere:
+
+```typescript
+import { useExecuteTransaction } from "@mysten/dapp-kit";
+
+function ExecutePreSigned({
+  signature,
+  transactionBytes,
+}: {
+  signature: string;
+  transactionBytes: string;
+}) {
+  const { mutate: executeTransaction } = useExecuteTransaction();
+
+  const handleExecute = () => {
+    executeTransaction({
+      signature,
+      transactionBlockBytes: transactionBytes,
+    });
+  };
+
+  return <button onClick={handleExecute}>Execute Transaction</button>;
+}
+```
+
+## Complete Example: Token Transfer Form
+
+A complete example with form validation and error handling:
+
+```typescript title="src/components/TransferForm.tsx"
+import {
+  useSignAndExecuteTransaction,
+  useCurrentAccount,
+} from "@mysten/dapp-kit";
+import { Transaction } from "@mysten/sui/transactions";
+import { useState } from "react";
+
+export function TransferForm() {
+  const [recipient, setRecipient] = useState("");
+  const [amount, setAmount] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [txDigest, setTxDigest] = useState<string | null>(null);
+
+  const account = useCurrentAccount();
+  const { mutate: signAndExecute, isPending } = useSignAndExecuteTransaction();
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    setTxDigest(null);
+
+    // Validation
+    if (!recipient.startsWith("0x")) {
+      setError("Invalid recipient address");
+      return;
+    }
+
+    const amountInMist = Math.floor(parseFloat(amount) * 1_000_000_000);
+
+    if (isNaN(amountInMist) || amountInMist <= 0) {
+      setError("Invalid amount");
+      return;
+    }
+
+    // Build transaction
+    const tx = new Transaction();
+    const [coin] = tx.splitCoins(tx.gas, [amountInMist]);
+    tx.transferObjects([coin], recipient);
+
+    // Execute
+    signAndExecute(
+      {
+        transaction: tx,
+        options: {
+          showEffects: true,
+          showObjectChanges: true,
+        },
+      },
+      {
+        onSuccess: ({ digest, effects }) => {
+          console.log("Transaction successful!");
+          console.log("Digest:", digest);
+          console.log("Gas used:", effects?.gasUsed);
+
+          setTxDigest(digest);
+          setRecipient("");
+          setAmount("");
+        },
+        onError: (err) => {
+          console.error("Transaction failed:", err);
+          setError(err.message || "Transaction failed");
+        },
+      }
+    );
+  };
+
+  if (!account) {
+    return <div>Please connect your wallet to transfer SUI</div>;
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="transfer-form">
+      <h2>Transfer SUI</h2>
+
+      <div className="form-group">
+        <label htmlFor="recipient">Recipient Address</label>
+        <input
+          id="recipient"
+          type="text"
+          value={recipient}
+          onChange={(e) => setRecipient(e.target.value)}
+          placeholder="0x..."
+          required
+        />
+      </div>
+
+      <div className="form-group">
+        <label htmlFor="amount">Amount (SUI)</label>
+        <input
+          id="amount"
+          type="number"
+          step="0.00000001"
+          value={amount}
+          onChange={(e) => setAmount(e.target.value)}
+          placeholder="0.0"
+          required
+        />
+      </div>
+
+      <button type="submit" disabled={isPending}>
+        {isPending ? "Sending..." : "Send SUI"}
+      </button>
+
+      {error && <div className="alert alert-error">❌ {error}</div>}
+
+      {txDigest && (
+        <div className="alert alert-success">
+          ✅ Transaction successful!
+          <br />
+          <a
+            href={`https://suiscan.xyz/testnet/tx/${txDigest}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            View on Explorer
+          </a>
+        </div>
+      )}
+    </form>
+  );
+}
+```
+
+## Transaction Gas Configuration
+
+Set custom gas budget and price:
+
+```typescript
+const tx = new Transaction();
+
+// Set gas budget (in MIST)
+tx.setGasBudget(10_000_000); // 0.01 SUI
+
+// Set gas price
+tx.setGasPrice(1000);
+
+// Set gas payment objects
+tx.setGasPayment([
+  { objectId: "0xGasCoin1...", version: "123", digest: "abc..." },
+]);
+```
+
+## Using Transaction Results
+
+Access transaction results for follow-up actions:
+
+```typescript
+signAndExecute(
+  {
+    transaction: tx,
+    options: {
+      showObjectChanges: true,
+      showEffects: true,
+    },
+  },
+  {
+    onSuccess: ({ digest, effects, objectChanges }) => {
+      // Get the digest
+      console.log("Tx Digest:", digest);
+
+      // Check execution status
+      console.log("Status:", effects?.status);
+
+      // Get created objects
+      const created = objectChanges?.filter(
+        (change) => change.type === "created"
+      );
+      console.log("Created objects:", created);
+
+      // Get mutated objects
+      const mutated = objectChanges?.filter(
+        (change) => change.type === "mutated"
+      );
+      console.log("Mutated objects:", mutated);
+
+      // Get gas used
+      console.log("Gas used:", effects?.gasUsed);
+    },
+  }
+);
+```
+
+## Best Practices
+
+<AccordionGroup>
+  <Accordion title="Always validate user input">
+    Validate addresses, amounts, and other inputs before building transactions.
+    
+    ```typescript
+    if (!isValidSuiAddress(recipient)) {
+      setError('Invalid address');
+      return;
+    }
+    ```
+  </Accordion>
+
+{" "}
+<Accordion title="Handle all error cases">
+  Provide clear error messages for common failures like insufficient balance,
+  user rejection, and network errors.
+</Accordion>
+
+{" "}
+<Accordion title="Show transaction status">
+  Use loading states and success/error feedback to improve UX. ```typescript
+  {isPending && <Spinner />}
+  {isSuccess && <SuccessMessage />}
+  {isError && <ErrorMessage />}
+  ```
+</Accordion>
+
+{" "}
+<Accordion title="Link to block explorer">
+  After successful transactions, provide a link to view on a block explorer like
+  Suiscan or Suivision.
+</Accordion>
+
+  <Accordion title="Test on testnet first">
+    Always test transactions on testnet before deploying to mainnet.
+  </Accordion>
+</AccordionGroup>
+
+## Congratulations! 🎉
+
+You've completed the Sui dApp Kit workshop! You now know how to:
+
+- ✅ Install and configure the Sui SDK and dApp Kit
+- ✅ Set up providers for your React app
+- ✅ Connect wallets with UI components and hooks
+- ✅ Query blockchain data with React hooks
+- ✅ Build, sign, and execute transactions
+
+## Next Steps
+
+Continue your Sui development journey:
+
+<CardGroup cols={2}>
+  <Card
+    title="Official Documentation"
+    icon="book"
+    href="https://sdk.mystenlabs.com/dapp-kit"
+  >
+    Explore the complete dApp Kit documentation
+  </Card>
+
+  <Card
+    title="Sui Move"
+    icon="code"
+    href="https://docs.sui.io/guides/developer/first-app"
+  >
+    Learn to write smart contracts in Move
+  </Card>
+
+  <Card
+    title="GitHub Examples"
+    icon="github"
+    href="https://github.com/MystenLabs/ts-sdks"
+  >
+    Browse example dApps and templates
+  </Card>
+
+  <Card title="Community" icon="discord" href="https://discord.com/invite/Sui">
+    Join the Sui Discord community
+  </Card>
+</CardGroup>
