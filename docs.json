@@ -9,16 +9,27 @@
   },
   "favicon": "/favicon.svg",
   "navigation": {
-    "groups": [
+    "tabs": [
       {
-        "group": "Sui Frontend Workshop",
-        "pages": [
-          "sui-workshop/01-introduction",
-          "sui-workshop/02-installation",
-          "sui-workshop/03-setup-providers",
-          "sui-workshop/04-connect-wallet",
-          "sui-workshop/05-read-data",
-          "sui-workshop/06-sign-transactions"
+        "tab": "Workshop",
+        "groups": [
+          {
+            "group": "Getting Started",
+            "pages": [
+              "index",
+              "sui-workshop/01-introduction"
+            ]
+          },
+          {
+            "group": "Workshop Modules",
+            "pages": [
+              "sui-workshop/02-installation",
+              "sui-workshop/03-setup-providers",
+              "sui-workshop/04-connect-wallet",
+              "sui-workshop/05-read-data",
+              "sui-workshop/06-sign-transactions"
+            ]
+          }
         ]
       }
     ],
